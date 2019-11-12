@@ -68,7 +68,7 @@ def goToNum(event=0):
 def showTranscript():
     global info
     separator.grid(row=5, column=0, columnspan=9, sticky='EW')
-    transcriptlabel.grid(row=6, columnspan=8)
+    transcriptlabel.grid(row=6, columnspan=8, pady=3)
     transcript = info["transcript"]
     if transcript == "":
         transcript = "No transcript available"
@@ -80,7 +80,7 @@ def showTranscript():
 #Load and display comic
 def loadimage(comicnum):
 
-    #Update current comic numbervv
+    #Update current comic number
     global currentnum
     currentnum = comicnum
 
@@ -108,19 +108,24 @@ def loadimage(comicnum):
     #Display image
     image = ImageTk.PhotoImage(image)
     canvas.create_image((400-image.width()/2), 2, image=image, anchor="nw")
-    canvas.create_line((0,0),(0,10), fill="SystemButtonFace")
-    canvas.configure(scrollregion=canvas.bbox("all"))
+    line = canvas.create_line((0,0),(0, max(image.height(), 596)), fill="SystemButtonFace")
+    canvas.configure(scrollregion=canvas.bbox(line))
     canvas.image=image
+    if image.height() >= 596:
+        scroll_y.grid(row=0, column=8, rowspan=6, sticky="ns")
+    else:
+        scroll_y.grid_remove()
 
 root = tk.Tk()
 root.title("xkcd")
+root.resizable(False, False)
 
 #BUTTONS_________________________________________________________________________________________________________
 bt_first = tk.Button(root, text = "<<",command = lambda: loadimage(1)).grid(row=0, column=0, sticky = "WE")
 bt_prev = tk.Button(root, text = "Previous", command = getPrev).grid(row=0, column=1, sticky = "WE")
 bt_random = tk.Button(root, text = "Random", command = getRandom).grid(row=0, column=2, sticky = "WE")
 
-int_box = tk.Entry(root)
+int_box = tk.Entry(root, width=4)
 int_box.grid(row=0, column=3, sticky="WE", padx=2)
 int_box.insert(0, str(currentnum))
 int_box.bind('<Return>', goToNum)
@@ -140,7 +145,7 @@ bt_last = tk.Button(root, text = ">>",command = lambda: loadimage(maxnum)).grid(
 
 #TITLE__________________________________________________________________________________________________________________
 title_var = tk.StringVar(root)
-title = tk.Label(root, textvariable = title_var, height = 2).grid(row=1, columnspan=8)
+title = tk.Label(root, textvariable = title_var).grid(row=1, columnspan=8, pady=10)
 
 #COMIC__________________________________________________________________________________________________________________
 canvas = tk.Canvas(root, width = 800, height = 600)
@@ -149,14 +154,13 @@ canvas.grid(row=2, column=0, columnspan=8)
 root.bind_all('<MouseWheel>', lambda event, canvas=canvas: mouse_scroll(event, canvas))
 
 scroll_y = tk.Scrollbar(root, orient="vertical", command=canvas.yview)
-scroll_y.grid(row=0, column=8, rowspan=6, sticky="ns")
 
 canvas.configure(yscrollcommand=scroll_y.set)
 canvas.configure(scrollregion=canvas.bbox("all"))
 
 #ALT TEXT______________________________________________________________________________________________________________
 alt_var = tk.StringVar(root)
-alttext = tk.Label(root, textvariable = alt_var, wraplength = 700, height = 3).grid(row=4, columnspan=8)
+alttext = tk.Label(root, textvariable = alt_var, wraplength = 700).grid(row=4, columnspan=8, pady = 5)
 
 #TRANSCRIPT____________________________________________________________________________________________________________
 separator = tkinter.ttk.Separator(root, orient="horizontal")
