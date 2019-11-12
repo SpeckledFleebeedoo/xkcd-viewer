@@ -6,6 +6,7 @@ import webbrowser
 import tkinter.ttk
 from PIL import ImageTk, Image
 from io import BytesIO
+import re
 
 #Get number of latest comic
 info = json.loads(urlopen("https://xkcd.com/info.0.json").read())
@@ -70,6 +71,7 @@ def showTranscript():
     separator.grid(row=5, column=0, columnspan=9, sticky='EW')
     transcriptlabel.grid(row=6, columnspan=8, pady=3)
     transcript = info["transcript"]
+    transcript = re.sub("\\n\\n{{Title text: .*}}", "", transcript)
     if transcript == "":
         transcript = "No transcript available"
     try:
