@@ -110,8 +110,7 @@ def loadimage(comicnum):
     #Display image
     image = ImageTk.PhotoImage(image)
     canvas.create_image((400-image.width()/2), 2, image=image, anchor="nw")
-    line = canvas.create_line((0,0),(0, max(image.height(), 596)), fill="SystemButtonFace")
-    canvas.configure(scrollregion=canvas.bbox(line))
+    canvas.configure(scrollregion=(-2, -2, 2, max(image.height()+2, 598)))
     canvas.image=image
     if image.height() >= 596:
         scroll_y.grid(row=0, column=8, rowspan=6, sticky="ns")
